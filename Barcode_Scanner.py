@@ -1,7 +1,4 @@
 import streamlit as st
-from streamlit_qrcode_scanner import qrcode_scanner
+from streamlit_webrtc import webrtc_streamer
 
-qr_code = qrcode_scanner(key='qrcode_scanner')
-
-if qr_code:
-st.write(qr_code)
+webrtc_streamer(key="example")
