@@ -8,3 +8,4 @@ speechrecognition
 gtts
 pydub
 requests
+streamlit_webrtc
