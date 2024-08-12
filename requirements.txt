@@ -9,3 +9,4 @@ gtts
 pydub
 requests
 streamlit_webrtc
+zbarlight
