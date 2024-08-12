@@ -6,10 +6,9 @@ from camera_input_live import camera_input_live
 "# Streamlit camera input live Demo"
 "## Try holding a qr code in front of your webcam"
 
-image = camera_input_live()
+image = camera_input_live(debounce=100)
 
 st.write('sdasda')
-
 if image is not None:
     st.image(image)
     bytes_data = image.getvalue()
