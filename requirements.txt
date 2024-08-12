@@ -1,0 +1,10 @@
+streamlit
+opencv-python-headless  # Ensure this is the headless version
+pyzbar
+pandas
+openpyxl
+Pillow
+speechrecognition
+gtts
+pydub
+requests
