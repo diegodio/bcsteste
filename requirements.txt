@@ -1,5 +1,2 @@
-av
-opencv-python
 streamlit
-pyzbar
-streamlit-webrtc
+streamlit_qrcode_scanner
