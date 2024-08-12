@@ -1,24 +1,25 @@
-import av
 import cv2
-import zbarlight
+import numpy as np
 import streamlit as st
-from streamlit_webrtc import webrtc_streamer, VideoProcessorBase
+from camera_input_live import camera_input_live
 
-def process_frame(frame):
-    image = frame.to_ndarray(format="bgr24")
+"# Streamlit camera input live Demo"
+"## Try holding a qr code in front of your webcam"
 
-    # Barcode detection
-    gray = cv2.cvtColor(image, cv2.COLOR_BGR2GRAY)
-    codes = zbarlight.scan_codes(['qrcode'], gray)
+image = camera_input_live()
 
-    if codes:
-        for code in codes:
-            barcode_data = code.data.decode('utf-8')
-            st.write(f"Barcode Data: {barcode_data}")
+if image is not None:
+    st.image(image)
+    bytes_data = image.getvalue()
+    cv2_img = cv2.imdecode(np.frombuffer(bytes_data, np.uint8), cv2.IMREAD_COLOR)
 
-    return av.VideoFrame.from_ndarray(image, format="bgr24")
+    detector = cv2.QRCodeDetector()
 
-webrtc_streamer(
-    key="barcode-detection",
-    video_processor_factory=process_frame,
-)
+    data, bbox, straight_qrcode = detector.detectAndDecode(cv2_img)
+
+    if data:
+        st.write("# Found QR code")
+        st.write(data)
+        with st.expander("Show details"):
+            st.write("BBox:", bbox)
+            st.write("Straight QR code:", straight_qrcode)

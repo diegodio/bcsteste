@@ -9,4 +9,4 @@ gtts
 pydub
 requests
 streamlit_webrtc
-zbarlight
+streamlit-camera-input-live
