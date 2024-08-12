@@ -8,18 +8,19 @@ from camera_input_live import camera_input_live
 
 image = camera_input_live()
 
-if image is not None:
-    st.image(image)
-    bytes_data = image.getvalue()
-    cv2_img = cv2.imdecode(np.frombuffer(bytes_data, np.uint8), cv2.IMREAD_COLOR)
+st.write('sdasda')
+# if image is not None:
+#     st.image(image)
+#     bytes_data = image.getvalue()
+#     cv2_img = cv2.imdecode(np.frombuffer(bytes_data, np.uint8), cv2.IMREAD_COLOR)
 
-    detector = cv2.QRCodeDetector()
+#     detector = cv2.QRCodeDetector()
 
-    data, bbox, straight_qrcode = detector.detectAndDecode(cv2_img)
+#     data, bbox, straight_qrcode = detector.detectAndDecode(cv2_img)
 
-    if data:
-        st.write("# Found QR code")
-        st.write(data)
-        with st.expander("Show details"):
-            st.write("BBox:", bbox)
-            st.write("Straight QR code:", straight_qrcode)
+#     if data:
+#         st.write("# Found QR code")
+#         st.write(data)
+#         with st.expander("Show details"):
+#             st.write("BBox:", bbox)
+#             st.write("Straight QR code:", straight_qrcode)
