@@ -10,3 +10,4 @@ pydub
 requests
 streamlit_webrtc
 streamlit-camera-input-live
+numpy
