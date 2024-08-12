@@ -1,13 +1,4 @@
 streamlit
-opencv-python-headless  # Ensure this is the headless version
-pyzbar
-pandas
-openpyxl
-Pillow
-speechrecognition
-gtts
-pydub
-requests
-streamlit_webrtc
 streamlit-camera-input-live
+opencv-python-headless
 numpy
