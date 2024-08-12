@@ -1,39 +1,55 @@
-import streamlit as st
+import av
 import cv2
-import numpy as np
+import streamlit as st 
 from pyzbar.pyzbar import decode
-from streamlit_webrtc import webrtc_streamer, VideoProcessorBase, WebRtcMode
+from streamlit_webrtc import (webrtc_streamer, VideoProcessorBase,WebRtcMode)
 
-class BarcodeProcessor(VideoProcessorBase):
-    def __init__(self):
-        self.barcode_data = None
+def live_detection(play_state):
 
-    def BarcodeReader(self, image):
-        detected_barcodes = decode(image)
-        for barcode in detected_barcodes:
-            (x, y, w, h) = barcode.rect
-            cv2.rectangle(image, (x, y), (x + w, y + h), (0, 255, 0), 2)
-            self.barcode_data = barcode.data.decode('utf-8')
-        return image
+   class BarcodeProcessor(VideoProcessorBase):
 
-    def recv(self, frame):
-        image = frame.to_ndarray(format="bgr24")
-        annotated_image = self.BarcodeReader(image)
-        return av.VideoFrame.from_ndarray(annotated_image, format="bgr24")
+      def __init__(self) -> None:
+         self.barcode_val = False
+      
+      def BarcodeReader(self, image):
+         detectedBarcodes = decode(image)
+         if not detectedBarcodes:
+            print("\n No barcode! \n")
+            return image, False
 
-def main():
-    st.title("Real-Time Barcode Scanner")
-    webrtc_ctx = webrtc_streamer(
-        key="barcode-scanner",
-        mode=WebRtcMode.SENDRECV,
-        video_processor_factory=BarcodeProcessor,
-        media_stream_constraints={"video": True, "audio": False},
-    )
+         else:
+            for barcode in detectedBarcodes: 
+               (x, y, w, h) = barcode.rect
+               cv2.rectangle(image, (x-10, y-10),
+                              (x + w+10, y + h+10),
+                              (0, 255, 0), 2)
 
-    if webrtc_ctx.video_processor:
-        barcode_data = webrtc_ctx.video_processor.barcode_data
-        if barcode_data:
-            st.write(f"Detected Barcode: {barcode_data}")
+            if detectedBarcodes[0] != "":
+               return image, detectedBarcodes[0]
 
-if __name__ == "__main__":
-    main()
+
+      def recv(self, frame: av.VideoFrame) -> av.VideoFrame:
+         image = frame.to_ndarray(format="bgr24")
+
+         annotated_image, result = self.BarcodeReader(image)
+        
+         if result == False:
+            return av.VideoFrame.from_ndarray(image, format="bgr24")
+
+         else:
+
+            self.barcode_val = result[0]
+            play_state = False
+            return av.VideoFrame.from_ndarray(annotated_image, format="bgr24")
+
+   stream = webrtc_streamer(
+         key="barcode-detection",
+         mode=WebRtcMode.SENDRECV,
+         desired_playing_state=play_state,
+         video_processor_factory=BarcodeProcessor,
+         media_stream_constraints={"video": True, "audio": False},
+         async_processing=True,
+      )
+
+play_state = True
+detected_barcode = live_detection(play_state)
